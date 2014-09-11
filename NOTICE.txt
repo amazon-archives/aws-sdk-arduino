@@ -1,0 +1,19 @@
+﻿Version 1 of Experimental AWS SDK for Arduino, and Samples
+
+Copyright 2014 Amazon.com, Inc. or its affiliates. All Rights Reserved. 
+
+This product includes software developed by Amazon Technologies, Inc (http://www.amazon.com/). 
+
+Licensed under the Apache License Version 2.0
+
+See the License for the specific language governing permissions and limitations under the License.
+
+**********************
+THIRD PARTY COMPONENTS
+**********************
+This software includes third party software subject to the following copyrights:
+
+- jsmn, minimalistic JSON parser in C - Copyright (c) 2010 Serge A. Zaitsev. Includes minor modifications.
+- Portable C++ Hashing Library (SHA256 files only) - Copyright (c) 2014 Stephan Brumme. Includes minor modifications.
+
+The licenses for these third party components are included in LICENSE
