@@ -6,7 +6,7 @@ All Amazon DynamoDB operations are supported. The code for creating, serializing
 
 The SDK is extensible to non-Arduino-compatible devices by implementing the interfaces in `DeviceIndependentInterfaces.cpp`/`.h`. See `SparkAWSImplementations.cpp`/`.h` and `GalileoAWSImplementations.cpp`/`.h` for examples of this.
 
-## Folder
+## Folder Structure
 
 /common contains all the common source code
 /sparkcore contains Spark IO Core device-specific implementations
@@ -81,6 +81,8 @@ Open up the Spark Build web page and create a new app. Name it whatever you woul
 Copy the contents of the sample you are using into the `.ino` file of your new app. 
 
 Next you need to import the SDK. Because the Spark Build IDE isn't local to your machine, you can't just `cp` the files over. Instead use the "+" tab in the top right corner of the Spark Build page to create a new file for each `.cpp`/`.h` file in the `src/` directory, except `GalileoAWSImplementations` and `AmazonKinesisClient`. Then copy and paste the contents of each file.
+
+
 
 ### Step 3: Creating `keys.h` and `keys.cpp`
 
