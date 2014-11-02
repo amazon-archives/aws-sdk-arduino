@@ -1,10 +1,19 @@
 # Version 1 of the Experimental AWS SDK for Arduino
 
-An experimental SDK for contacting AWS Services on Arduino-compatible devices. Currently with DynamoDB support and potential Kinesis support.
+An experimental SDK for contacting AWS Services on Arduino-compatible devices. Currently it supports Amazon DynamoDB, Amazon Kinesis and Amazon SNS. More services coming soon.
 
-All DynamoDB operations are supported. The code for creating, serializing, and deserializing Kinesis input and output objects is included, but the devices that the experimental SDK has been tested on do not have readily available HTTPS support. This code has been included so it can be used by those who want to do further experimenting with Kinesis and HTTPS.
+All Amazon DynamoDB operations are supported. The code for creating, serializing, and deserializing Kinesis input and output objects is included, but the devices that the experimental SDK has been tested on do not have readily available HTTPS support. This code has been included so it can be used by those who want to do further experimenting with Kinesis and HTTPS.
 
 The SDK is extensible to non-Arduino-compatible devices by implementing the interfaces in `DeviceIndependentInterfaces.cpp`/`.h`. See `SparkAWSImplementations.cpp`/`.h` and `GalileoAWSImplementations.cpp`/`.h` for examples of this.
+
+## Folder
+
+/common contains all the common source code
+/sparkcore contains Spark IO Core device-specific implementations
+/edison contains Intel Edison device-specfic implementations
+/galileo contains Intel Galileo device-specific implementations
+
+Simply copy the device-specific implementations based on the device that you are working on in the Common directory so you can test out your samples using Arduino IDE.
 
 Happy experimenting!
 
@@ -52,18 +61,18 @@ You can follow the steps below to get the tables set up with the right values, c
 
 This step is different for the Spark Core and Intel Galileo.
 
-#### Intel Galileo
+#### Intel Galileo/Edison
 
-With Galileo you should be using the Arduino IDE for Galileo available [here](https://communities.intel.com/docs/DOC-22226).
+With Galileo or Edison, you should be using the Arduino IDE from Intel as it includes Galileo and Edison libraries. [Link to Intel-Arduino IDE](https://communities.intel.com/docs/DOC-22226).
 
 Make an `AWSArduinoSDK` directory in the Arduino IDE's `libraries` directory (e.g. `~/Arduino/libraries/AWSArduinoSDK`).
 
-Move all of the files from the SDK's `src/` directory into the `AWSArduinoSDK` directory, except the `SparkAWSImplementations` and `AmazonKinesisClient` files.
+Move all of the files from the SDK's `src/common` directory into the `AWSArduinoSDK` directory. Import the library.
 
 Create a new sketch with the Arduino IDE and copy and paste the sample code into it.
 
 
-#### Spark Core
+#### Spark IO Core
 
 This assumes you already have your Spark set up and are able to program it with Spark Build. If you do not, head over to [Spark's website](http://docs.spark.io/). 
 
@@ -124,7 +133,7 @@ Buttons:
 * Button for changing green color value should be connected to pin 8
 * Button for changing blue color value should be connected to pin 12
 
-For Galileo, after the wiring is finished, you should be able to connect it to power, connect it to your computer via usb, and compile and upload the code with the Arduino IDE. Be sure to refer to the comments in the samples for help.
+For Galileo/Edison, after the wiring is finished, you should be able to connect it to power, connect it to your computer via usb, and compile and upload the code with the Arduino IDE. Be sure to refer to the comments in the samples for help.
 
 For Spark, after the wiring is finished, you should be able to connect it to your computer via USB, and *Flash* the code. Be sure to refer to the comments in the samples for help.
 
