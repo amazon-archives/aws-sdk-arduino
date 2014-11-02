@@ -8,12 +8,12 @@ The SDK is extensible to non-Arduino-compatible devices by implementing the inte
 
 ## Folder Structure
 
-/common contains all the common source code
-/sparkcore contains Spark IO Core device-specific implementations
-/edison contains Intel Edison device-specfic implementations
-/galileo contains Intel Galileo device-specific implementations
+	* /common contains all the common source code
+	* /sparkcore contains Spark IO Core device-specific implementations
+	* /edison contains Intel Edison device-specfic implementations
+	* /galileo contains Intel Galileo device-specific implementations
 
-Simply copy the device-specific implementations based on the device that you are working on in the Common directory so you can test out your samples using Arduino IDE.
+Depending on the device that you are working, Simply copy the those device-specific implementations to the Common directory so you can test out your samples using Arduino IDE.
 
 Happy experimenting!
 
