@@ -1,6 +1,10 @@
 /*
-    This sample publishes a message to an Amazon SNS target (topic or endpoint).
-*/
+ *  This sample publishes a message to an Amazon SNS target (topic or endpoint).
+ *
+ *  For this demo to work, add your AWS keys in "awsSecKey" and "awsKeyID", create an SNS topic
+ *  or endpoint and populate the TARGET_ARN with the topic or endpoint ARN.
+ *
+ */
 
 #include "AmazonSNSClient.h"
 #include "SparkAWSImplementations.h"
