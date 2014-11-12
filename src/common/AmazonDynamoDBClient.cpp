@@ -704,9 +704,9 @@ MinimalString AttributeValue::jsonSerialize() const {
     return map.jsonSerialize();
 }
 
-void AttributeValue::setSS(MinimalList<MinimalString > SSS) {
+void AttributeValue::setSS(MinimalList<MinimalString > SS) {
     SSBeenSet = true;
-    this->SSS = SSS;
+    this->SS = SS;
 }
 
 void AttributeValue::setBS(MinimalList<MinimalString > BS) {
