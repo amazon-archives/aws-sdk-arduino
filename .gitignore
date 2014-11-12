@@ -1,0 +1,3 @@
+firmware*bin
+.DS_Store
+/src/creds/keys.cpp

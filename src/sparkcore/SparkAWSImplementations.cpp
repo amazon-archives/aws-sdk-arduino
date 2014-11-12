@@ -49,7 +49,7 @@ SparkDateTimeProvider::SparkDateTimeProvider() {
 
 const char* SparkDateTimeProvider::getDateTime() {
     /* Spark provides the current time, so all we have to do is format it. */
-    sprintf(dateTime, "%.4d%.2d%.2d%.2d%.2d%.2d", Time.year(), Time.month(),
+    sprintf(dateTime, "%.4d-%.2d-%.2dT%.2d-%.2d-%.2d", Time.year(), Time.month(),
             Time.day(), Time.hour(), Time.minute(), Time.second());
     return dateTime;
 }

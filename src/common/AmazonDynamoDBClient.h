@@ -153,7 +153,7 @@ public:
 
 /* <p>Represents the data for an attribute. You can set one, and only one, of the elements.</p> */
 class AttributeValue{
-    MinimalList<MinimalString > SSS;
+    MinimalList<MinimalString > SS;
     MinimalList<MinimalString > BS;
     MinimalString B;
     MinimalString S;
@@ -170,7 +170,7 @@ public:
     AttributeValue();
     bool jsonDeserialize(MinimalString json);
     MinimalString jsonSerialize() const;
-    void setSS(MinimalList<MinimalString > SSS);
+    void setSS(MinimalList<MinimalString > SS);
     void setBS(MinimalList<MinimalString > BS);
     void setB(MinimalString B);
     void setS(MinimalString S);
