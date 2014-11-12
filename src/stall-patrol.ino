@@ -2,6 +2,7 @@
 #include "SparkAWSImplementations.h"
 #include "AWSFoundationalTypes.h"
 #include "keys.h"
+#include "SparkButton.h"
 
 /*
  *
@@ -46,6 +47,9 @@ AmazonDynamoDBClient ddbClient;
 PutItemInput putItemInput;
 ActionError actionError;
 
+// Spark button
+SparkButton button = SparkButton();
+
 void setup() {
     /* Begin serial communication. */
     Serial.begin(9600);
@@ -58,6 +62,10 @@ void setup() {
     ddbClient.setDateTimeProvider(&dateTimeProvider);
     /* Open SWITCH_PIN to be read from. */
     pinMode(SWITCH_PIN, INPUT);
+
+    //Register our Spark function here.
+    Spark.function("alert", alertControl);
+    button.begin();
 }
 
 void loop() {
@@ -115,3 +123,15 @@ void loop() {
     }
     delay(500);
 }
+
+int alertControl(String command)
+{
+        // Flash Rainbow LEDs three times to indicate we are ready
+    for (int i = 1; i<=3; i++) {
+            button.rainbow(3);
+            button.allLedsOff();
+            delay(500);
+    }
+    return 1;
+}
+
