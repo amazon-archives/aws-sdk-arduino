@@ -1,0 +1,5 @@
+// keys.cpp
+#include "keys.h"
+
+const char* awsKeyID = "";
+const char* awsSecKey = "";
