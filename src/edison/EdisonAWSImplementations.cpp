@@ -6,6 +6,56 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void printWifiStatus() {
+
+	// print the SSID of the network you're attached to:
+	Serial.print("SSID: ");
+	Serial.println(WiFi.SSID());
+
+	// print your WiFi shield's IP address:
+	IPAddress ip = WiFi.localIP();
+	Serial.print("IP Address: ");
+	Serial.println(ip);
+
+	// print the received signal strength:
+	long rssi = WiFi.RSSI();
+	Serial.print("signal strength (RSSI):");
+	Serial.print(rssi);
+	Serial.println(" dBm");
+
+}
+
+
+bool Edison_Wifi_Setup(char* pSSID, char* pPassword) {
+
+	int tempStatus = WL_IDLE_STATUS;
+	bool ret_val = true;
+	enum {
+		SECS_IN_MS = 7000
+	};
+	if (WiFi.status() == WL_NO_SHIELD) {
+		Serial.println("WiFi shield not present");
+		ret_val = false;
+	}
+
+	String fv = WiFi.firmwareVersion();
+	if (fv != "1.1.0") {
+		Serial.println("Please upgrade the firmware");
+		ret_val = false;
+	}
+	while (tempStatus != WL_CONNECTED) {
+		Serial.print("Attempting to connect to SSID: ");
+		Serial.println(pSSID);
+		// Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+		tempStatus = WiFi.begin(pSSID, pPassword);
+		// wait 10 seconds for connection:
+		delay(SECS_IN_MS);
+	}
+
+	return ret_val;
+}
+
+
 int delayTime = 500;
 
 EdisonHttpClient::EdisonHttpClient() {
@@ -42,6 +92,27 @@ bool EdisonHttpClient::usesCurl() {
     /* Does not use curl command. */
     return false;
 }
+
+EdisonHttpCurlClient::EdisonHttpCurlClient() {
+}
+
+char* EdisonHttpCurlClient::send(const char* request, const char* serverUrl,
+        int port) {
+    // call curl as a system call, passing 'request' as the system call command
+    //system (request + " >/dev/ttyGS0");
+    char* buffer = new char[1000]();
+    sprintf(buffer, "%s %s", request, ">/dev/ttyGS0");
+    char* response = new char[2 + 1]();
+    buffer[1000] = '\0';
+    system (buffer);
+    return response;
+}
+
+bool EdisonHttpCurlClient::usesCurl() {
+    /* Use curl command. */
+    return true;
+}
+
 
 EdisonDateTimeProvider::EdisonDateTimeProvider() {
     /* These are initialized to defaults. The defaults will cause the request

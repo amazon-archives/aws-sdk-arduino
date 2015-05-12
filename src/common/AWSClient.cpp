@@ -20,8 +20,8 @@
 static const char* CANONICAL_FORM_POST_LINE = "POST\n/\n\n";
 static const int CANONICAL_FORM_POST_LINE_LEN = 8;
 static const char* HTTPS_REQUEST_POST_LINE =
-        "POST https://%s.%s.%s/ HTTPS/1.1\n";
-static const int HTTPS_REQUEST_POST_LINE_LEN = 29;
+        "POST https://%s.%s.%s/ HTTP/1.1\n";
+static const int HTTPS_REQUEST_POST_LINE_LEN = 28;
 static const char* HTTP_REQUEST_POST_LINE = "POST http://%s.%s.%s/ HTTP/1.1\n";
 static const int HTTP_REQUEST_POST_LINE_LEN = 27;
 static const char* CURL_START = "curl --silent -X POST ";

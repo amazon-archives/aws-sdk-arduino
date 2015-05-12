@@ -12,6 +12,8 @@ The SDK is extensible to non-Arduino-compatible devices by implementing the inte
 	* /sparkcore contains Spark IO Core device-specific implementations
 	* /edison contains Intel Edison device-specfic implementations
 	* /galileo contains Intel Galileo device-specific implementations
+    * /mediatek contains MediaTek LinkIt One device-specific implementations
+
 
 Depending on the device that you are working, Simply copy the those device-specific implementations to the Common directory so you can test out your samples using Arduino IDE.
 
@@ -61,7 +63,11 @@ You can follow the steps below to get the tables set up with the right values, c
 
 This step is different for the Spark Core and Intel Galileo.
 
-#### Intel Galileo/Edison
+#### Connected Maraca Sample (Edison/SparkCore/MediaTek)
+
+follow the step by step guide: http://bit.ly/aws-iot-hackseries 
+
+#### Intel Galileo/Edison Sample
 
 With Galileo or Edison, you should be using the Arduino IDE from Intel as it includes Galileo and Edison libraries. [Link to Intel-Arduino IDE](https://communities.intel.com/docs/DOC-22226).
 
@@ -72,7 +78,7 @@ Move all of the files from the SDK's `src/common` directory into the `AWSArduino
 Create a new sketch with the Arduino IDE and copy and paste the sample code into it.
 
 
-#### Spark IO Core
+#### Spark IO Core Sample
 
 This assumes you already have your Spark set up and are able to program it with Spark Build. If you do not, head over to [Spark's website](http://docs.spark.io/). 
 

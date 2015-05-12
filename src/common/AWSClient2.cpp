@@ -18,8 +18,8 @@
 static const char* CANONICAL_FORM_POST_LINE = "POST\n/\n\n";
 static const int CANONICAL_FORM_POST_LINE_LEN = 8;
 static const char* HTTPS_REQUEST_POST_LINE =
-        "POST https://%s.%s.%s/ HTTPS/1.1\n";
-static const int HTTPS_REQUEST_POST_LINE_LEN = 29;
+        "POST https://%s.%s.%s/ HTTP/1.1\n";
+static const int HTTPS_REQUEST_POST_LINE_LEN = 28;
 static const char* HTTP_REQUEST_POST_LINE = "POST http://%s.%s.%s/ HTTP/1.1\n";
 static const int HTTP_REQUEST_POST_LINE_LEN = 27;
 static const char* TO_SIGN_TEMPLATE =
@@ -114,7 +114,7 @@ void AWSClient2::initSignedHeaders() {
             awsEndpoint);
     headerLens[headersCreated++] = len;
 
-    len = X_AMZ_DATE_HEADER_LEN + AWS_DATE_LEN + AWS_TIME_LEN;
+    len = X_AMZ_DATE_HEADER_LEN + AWS_DATE_LEN2 + AWS_TIME_LEN2;
     headers[headersCreated] = new char[len + 1]();
     sprintf(headers[headersCreated], X_AMZ_DATE_HEADER, awsDate, awsTime);
     headerLens[headersCreated++] = len;
@@ -130,7 +130,7 @@ char* AWSClient2::createStringToSign(void) {
         canonicalFormLen += *(headerLens + i) + 1;
     }
     /* +2 for newlines. */
-    canonicalFormLen += SIGNED_HEADERS_LEN + HASH_HEX_LEN + 2;
+    canonicalFormLen += SIGNED_HEADERS_LEN + HASH_HEX_LEN2 + 2;
 
     char* canonicalForm = new char[canonicalFormLen + 1]();
 
@@ -148,7 +148,7 @@ char* AWSClient2::createStringToSign(void) {
     hashed = (*sha256)(payload.getCStr(), payload.length());
     strcpy(canonicalForm + canonicalFormWritten, hashed);
     delete[] hashed;
-    canonicalFormWritten += HASH_HEX_LEN;
+    canonicalFormWritten += HASH_HEX_LEN2;
 
     /* Hash the canonicalForm string. */
     hashed = (*sha256)(canonicalForm, canonicalFormWritten);
@@ -157,8 +157,8 @@ char* AWSClient2::createStringToSign(void) {
     delete[] canonicalForm;
 
     /* Determine the size to the string to sign. */
-    int toSignLen = TO_SIGN_TEMPLATE_LEN + 2 * AWS_DATE_LEN + AWS_TIME_LEN
-            + strlen(awsRegion) + strlen(awsService) + HASH_HEX_LEN;
+    int toSignLen = TO_SIGN_TEMPLATE_LEN + 2 * AWS_DATE_LEN2 + AWS_TIME_LEN2
+            + strlen(awsRegion) + strlen(awsService) + HASH_HEX_LEN2;
 
     /* Create and return the string to sign. */
     char* toSign = new char[toSignLen + 1]();
@@ -171,7 +171,7 @@ char* AWSClient2::createStringToSign(void) {
 char* AWSClient2::createSignature(const char* toSign) {
 
     /* Allocate memory for the signature */
-    char* signature = new char[HASH_HEX_LEN + 1]();
+    char* signature = new char[HASH_HEX_LEN2 + 1]();
 
     /* Create the signature key */
     /* + 4 for "AWS4" */
@@ -204,9 +204,9 @@ char* AWSClient2::createSignature(const char* toSign) {
 }
 
 void AWSClient2::initUnsignedHeaders(const char* signature) {
-    int len = AUTHORIZATION_HEADER_LEN + strlen(awsKeyID) + AWS_DATE_LEN
+    int len = AUTHORIZATION_HEADER_LEN + strlen(awsKeyID) + AWS_DATE_LEN2
             + strlen(awsRegion) + strlen(awsService) + SIGNED_HEADERS_LEN
-            + HASH_HEX_LEN;
+            + HASH_HEX_LEN2;
     headers[headersCreated] = new char[len + 1]();
     sprintf(headers[headersCreated], AUTHORIZATION_HEADER, awsKeyID, awsDate,
             awsRegion, awsService, SIGNED_HEADERS, signature);
