@@ -12,13 +12,13 @@
 #include "AWSFoundationalTypes.h"
 
 /* Total number of headers. */
-static const int HEADER_COUNT = 7;
+static const int HEADER_COUNT2 = 7;
 /* Size of the awsDate string. */
-static const int AWS_DATE_LEN = 8;
+static const int AWS_DATE_LEN2 = 8;
 /* Size of the awsTime string. */
-static const int AWS_TIME_LEN = 6;
+static const int AWS_TIME_LEN2 = 6;
 /* Size of sha hashes and signatures in hexidecimal. */
-static const int HASH_HEX_LEN = 64;
+static const int HASH_HEX_LEN2 = 64;
 
 /* Base class for an AWS Service Client. Creates http and https request in raw
  * http format or as a curl command. */
@@ -32,15 +32,15 @@ class AWSClient2 {
     /* The user's AWS Access Key ID for accessing the AWS Resource. */
     char* awsKeyID;
     /* GMT date in yyyyMMdd format. */
-    char awsDate[AWS_DATE_LEN + 1];
+    char awsDate[AWS_DATE_LEN2 + 1];
     /* GMT time in HHmmss format. */
-    char awsTime[AWS_TIME_LEN + 1];
+    char awsTime[AWS_TIME_LEN2 + 1];
     /* Number of headers created. */
     int headersCreated;
     /* Array of the created http headers. */
-    char* headers[HEADER_COUNT];
+    char* headers[HEADER_COUNT2];
     /* Array of string lengths of the headers in the "headers" array. */
-    int headerLens[HEADER_COUNT];
+    int headerLens[HEADER_COUNT2];
     /* The payload of the httprequest to be created */
     MinimalString payload;
 
