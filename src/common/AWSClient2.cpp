@@ -18,9 +18,9 @@
 static const char* CANONICAL_FORM_POST_LINE = "POST\n/\n\n";
 static const int CANONICAL_FORM_POST_LINE_LEN = 8;
 static const char* HTTPS_REQUEST_POST_LINE =
-        "POST https://%s/ HTTP/1.1\n";
+        "POST https://%s.%s.%s/ HTTP/1.1\n";
 static const int HTTPS_REQUEST_POST_LINE_LEN = 28;
-static const char* HTTP_REQUEST_POST_LINE = "POST http://%s/ HTTP/1.1\n";
+static const char* HTTP_REQUEST_POST_LINE = "POST http://%s.%s.%s/ HTTP/1.1\n";
 static const int HTTP_REQUEST_POST_LINE_LEN = 27;
 static const char* TO_SIGN_TEMPLATE =
         "AWS4-HMAC-SHA256\n%sT%sZ\n%s/%s/%s/aws4_request\n%s";
@@ -61,11 +61,6 @@ void AWSClient2::setAWSEndpoint(const char * awsEndpoint) {
     int len = strlen(awsEndpoint) + 1;
     this->awsEndpoint = new char[len]();
     strcpy(this->awsEndpoint, awsEndpoint);
-}
-void AWSClient2::setAWSDomain(const char * awsDomain) {
-    int len = strlen(awsDomain) + 1;
-    this->awsDomain = new char[len]();
-    strcpy(this->awsDomain, awsDomain);
 }
 void AWSClient2::setAWSSecretKey(const char * awsSecKey) {
     int len = strlen(awsSecKey) + 1;
@@ -123,16 +118,6 @@ void AWSClient2::initSignedHeaders() {
     headers[headersCreated] = new char[len + 1]();
     sprintf(headers[headersCreated], X_AMZ_DATE_HEADER, awsDate, awsTime);
     headerLens[headersCreated++] = len;
-}
-
-char* AWSClient2::createHostString(void) {
-  if(awsDomain[0] != '\0') {
-    return awsDomain;
-  } else {
-    char* host = new char[200]();
-    sprintf(host, "%s.%s.%s", awsService, awsRegion, awsEndpoint);
-    return host;
-  }
 }
 
 char* AWSClient2::createStringToSign(void) {
@@ -266,8 +251,8 @@ char* AWSClient2::headersToRequest() {
             httpS ? HTTPS_REQUEST_POST_LINE : HTTP_REQUEST_POST_LINE;
 
     /* Calculate length of httpRequest string. */
-    char* host = createHostString();
-    int httpRequestLen = postLineLen + strlen(host);
+    int httpRequestLen = postLineLen + strlen(awsService) + strlen(awsRegion)
+            + strlen(awsEndpoint);
     for (int i = 0; i < headersCreated; i++) {
         /* +1 for newline. */
         httpRequestLen += *(headerLens + i) + 1;
@@ -278,7 +263,8 @@ char* AWSClient2::headersToRequest() {
     /* Create and write to the httpRequest string. */
     char* httpRequest = new char[httpRequestLen + 1]();
     int httpRequestWritten = 0;
-    httpRequestWritten += sprintf(httpRequest + httpRequestWritten, postLine, host);
+    httpRequestWritten += sprintf(httpRequest + httpRequestWritten, postLine,
+            awsService, awsRegion, awsEndpoint);
     for (int i = 0; i < headersCreated; i++) {
         httpRequestWritten += sprintf(httpRequest + httpRequestWritten, "%s\n",
                 *(headers + i));

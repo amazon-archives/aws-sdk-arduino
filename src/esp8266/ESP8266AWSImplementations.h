@@ -2,7 +2,6 @@
 #define AWSESP2866IMPLEMENTATIONS_H_
 #include "DeviceIndependentInterfaces.h"
 /* application.h is Esp8266's standard library. Define TCPClient. */
-//#include <application.h>
 #include <ESP8266WiFi.h>
 
 /* HttpClient implementation to be used on the Esp8266 Core device. */

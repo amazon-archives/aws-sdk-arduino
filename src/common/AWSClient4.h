@@ -5,42 +5,46 @@
  *
  */
 
-#ifndef AWSCLIENT2_H_
-#define AWSCLIENT2_H_
+#ifndef AWSCLIENT4_H_
+#define AWSCLIENT4_H_
 
 #include "DeviceIndependentInterfaces.h"
 #include "AWSFoundationalTypes.h"
 
 /* Total number of headers. */
-static const int HEADER_COUNT = 7;
+static const int HEADER_COUNT4 = 7;
 /* Size of the awsDate string. */
-static const int AWS_DATE_LEN = 8;
+static const int AWS_DATE_LEN4 = 8;
 /* Size of the awsTime string. */
-static const int AWS_TIME_LEN = 6;
+static const int AWS_TIME_LEN4 = 6;
 /* Size of sha hashes and signatures in hexidecimal. */
-static const int HASH_HEX_LEN = 64;
+static const int HASH_HEX_LEN4 = 64;
 
 /* Base class for an AWS Service Client. Creates http and https request in raw
  * http format or as a curl command. */
-class AWSClient2 {
+class AWSClient4 {
     /* Name of region, eg. "us-east-1" in "kinesis.us-east-1.amazonaws.com". */
     char* awsRegion;
     /* Endpoint, eg. "amazonaws.com" in "kinesis.us-east-1.amazonaws.com". */
     char* awsEndpoint;
+    /* Domain, optional, eg. "A2MBBEONHC9LUG.iot.us-east-1.amazonaws.com". */
+    char* awsDomain;
+    /* Path, optional eg. "/things/foobar/shadow", eg for iot-data. */
+    char* awsPath;
     /* The user's AWS Secret Key for accessing the AWS Resource. */
     char* awsSecKey;
     /* The user's AWS Access Key ID for accessing the AWS Resource. */
     char* awsKeyID;
     /* GMT date in yyyyMMdd format. */
-    char awsDate[AWS_DATE_LEN + 1];
+    char awsDate[AWS_DATE_LEN2 + 1];
     /* GMT time in HHmmss format. */
-    char awsTime[AWS_TIME_LEN + 1];
+    char awsTime[AWS_TIME_LEN2 + 1];
     /* Number of headers created. */
     int headersCreated;
     /* Array of the created http headers. */
-    char* headers[HEADER_COUNT];
+    char* headers[HEADER_COUNT2];
     /* Array of string lengths of the headers in the "headers" array. */
-    int headerLens[HEADER_COUNT];
+    int headerLens[HEADER_COUNT2];
     /* The payload of the httprequest to be created */
     MinimalString payload;
 
@@ -76,6 +80,8 @@ protected:
     const char* awsService;
     /* Content type of payload, eg. "application/x-amz-json-1.1". */
     const char* contentType;
+    // /* Generates the host based on subdomain, service, etc */
+    // char* createHostString(void);
     /* Creates a raw http request, given the payload and current GMT date in
      * yyyyMMddHHmmss format. Should be exposed to user by extending class.
      * Returns 0 if client is unititialized. */
@@ -88,8 +94,12 @@ protected:
 public:
     /* Setters for values used by createRequest and createCurlRequest. Must
      * be set or create[Curl]Request will return null. */
+    /* Generates the host based on subdomain, service, etc */
+    char* createHostString(void);
     void setAWSRegion(const char * awsRegion);
     void setAWSEndpoint(const char * awsEndpoint);
+    void setAWSDomain(const char * awsDomain);
+    void setAWSPath(const char * awsPath);
     void setAWSSecretKey(const char * awsSecKey);
     void setAWSKeyID(const char * awsKeyID);
     void setHttpClient(IHttpClient* httpClient);
@@ -97,4 +107,4 @@ public:
     ~AWSClient2(void);
 };
 
-#endif /* AWSCLIENT2_H_ */
+#endif /* AWSCLIENT4_H_ */

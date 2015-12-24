@@ -5,17 +5,17 @@
 
 static const char* SERVICE = "iotdata";
 static const char* FORM_TYPE = "application/json";
-static const char* PAYLOAD_TEMPLATE = "%s";
+// static const char* PAYLOAD_TEMPLATE = "%s";
 // int PAYLOAD_TEMPLATE_LENGTH = 2;
 int IOT_EXTRACTED_TIMESTAMP_BUFFER_LENGTH = 17;
 int IOT_FORMATTED_TIMESTAMP_BUFFER_LENGTH = 15;
 
-AmazonIOTClient::AmazonIOTClient() : AWSClient2() {
+AmazonIOTClient::AmazonIOTClient() : AWSClient4() {
     awsService = SERVICE;
     httpS = true;
 }
 
-char* AmazonIOTClient::update_shadow(MinimalString url, MinimalString shadow, ActionError& actionError) {
+char* AmazonIOTClient::update_shadow(MinimalString shadow, ActionError& actionError) {
 
     actionError = NONE_ACTIONERROR;
     contentType = FORM_TYPE;
@@ -25,9 +25,10 @@ char* AmazonIOTClient::update_shadow(MinimalString url, MinimalString shadow, Ac
 
     // char* request = createRequest(url, shadow);
     char* request = createRequest(shadow);
+    // char* response = sendData(request);
     return request;
 
-    // char* response = sendData(request);
+
     // delete[] request;
     //
     // if (response == NULL) {

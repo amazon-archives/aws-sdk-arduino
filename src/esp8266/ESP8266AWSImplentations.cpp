@@ -1,9 +1,9 @@
 #include <stdio.h>
 /* application.h is Esp8266's standard library. Defines the Arduino String
  * object, the Arduino delay() procedure, and the Esp8266 TCPClient. */
-//#include <application.h>
 #include "Esp8266AWSImplementations.h"
 #include "DeviceIndependentInterfaces.h"
+#include <ESP8266WiFi.h>
 #include <string.h>
 
 int delayTime = 500;
@@ -14,8 +14,15 @@ Esp8266HttpClient::Esp8266HttpClient() {
 
 char* Esp8266HttpClient::send(const char* request, const char* serverUrl, int port) {
 
+    WiFiClientSecure client;
+    Serial.println(serverUrl);
+    Serial.println(port);
+    Serial.println(request);
+    Serial.println("");
+    Serial.println("");
+
     /* Arduino String to build the response with. */
-    String responseBuilder = "";
+    String responseBuilder = "foobar?";
     if (client.connect(serverUrl, port)) {
         /* Send the requests */
         client.println(request);
@@ -30,14 +37,13 @@ char* Esp8266HttpClient::send(const char* request, const char* serverUrl, int po
     } else {
         client.stop();
         /* Error connecting. */
-        return 0;
+        return "can't setup SSL connection";
     }
     /* Copy responseBuilder into char* */
     int len = responseBuilder.length();
     char* response = new char[len + 1]();
     responseBuilder.toCharArray(response, len + 1);
     return response;
-    return 0;
 }
 
 bool Esp8266HttpClient::usesCurl() {
@@ -51,18 +57,15 @@ Esp8266DateTimeProvider::Esp8266DateTimeProvider() {
 }
 
 const char* Esp8266DateTimeProvider::getDateTime() {
-    // return "20151221232400";
-    return updateCurTime();
+    return "20151224120100";
+    // return updateCurTime();
 }
 bool Esp8266DateTimeProvider::syncTakesArg(void) {
     return true;
 }
 
 void Esp8266DateTimeProvider::sync(const char* dateTime) {
-    /* Use Esp8266's servers to synchronize current time. */
-    //Esp8266.syncTime();
-    ///dateTime = updateCurTime();
-    //strcpy(dateTime,tNow);
+  // should have no need for an implementation
 }
 
 ////////////////////////////////////
@@ -123,7 +126,11 @@ char* updateCurTime(void) {
 
         // read the http GET Response
         String req2 = client2.readString();
-        // Serial.print(req2);
+        Serial.println("");
+        Serial.println("");
+        Serial.print(req2);
+        Serial.println("");
+        Serial.println("");
 
         // close connection
         delay(1);
@@ -142,6 +149,6 @@ char* updateCurTime(void) {
     else {
       Serial.println("did not connect to timeserver\n");
     }
-    timeout_busy=0;     //reset timeout
-    return dateStamp;   //Return latest or last good dateStamp
+    timeout_busy=0;     // reset timeout
+    return dateStamp;   // Return latest or last good dateStamp
 }

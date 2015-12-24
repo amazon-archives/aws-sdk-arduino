@@ -1,6 +1,6 @@
 #ifndef AMAZONIOTCLIENT_H_
 #define AMAZONIOTCLIENT_H_
-#include "AWSClient2.h"
+#include "AWSClient4.h"
 
 
 // class Shadow {
@@ -12,11 +12,11 @@
 
 
 
-class AmazonIOTClient : public AWSClient2 {
+class AmazonIOTClient : public AWSClient4 {
 public:
     AmazonIOTClient();
 
-    char* update_shadow(MinimalString url, MinimalString shadow, ActionError& actionError);
+    char* update_shadow(MinimalString shadow, ActionError& actionError);
 };
 
-#endif /* AMAZONSNSCLIENT_H_ */
+#endif /* AMAZONIOTCLIENT_H_ */
