@@ -36,15 +36,15 @@ class AWSClient4 {
     /* The user's AWS Access Key ID for accessing the AWS Resource. */
     char* awsKeyID;
     /* GMT date in yyyyMMdd format. */
-    char awsDate[AWS_DATE_LEN2 + 1];
+    char awsDate[AWS_DATE_LEN4 + 1];
     /* GMT time in HHmmss format. */
-    char awsTime[AWS_TIME_LEN2 + 1];
+    char awsTime[AWS_TIME_LEN4 + 1];
     /* Number of headers created. */
     int headersCreated;
     /* Array of the created http headers. */
-    char* headers[HEADER_COUNT2];
+    char* headers[HEADER_COUNT4];
     /* Array of string lengths of the headers in the "headers" array. */
-    int headerLens[HEADER_COUNT2];
+    int headerLens[HEADER_COUNT4];
     /* The payload of the httprequest to be created */
     MinimalString payload;
 
@@ -89,7 +89,7 @@ protected:
     /* Sends http data. Returns http response, or null on error. */
     char* sendData(const char* data);
     /* Empty constructor. Must also be initialized with init. */
-    AWSClient2();
+    AWSClient4();
 
 public:
     /* Setters for values used by createRequest and createCurlRequest. Must
@@ -104,7 +104,7 @@ public:
     void setAWSKeyID(const char * awsKeyID);
     void setHttpClient(IHttpClient* httpClient);
     void setDateTimeProvider(IDateTimeProvider* dateTimeProvider);
-    ~AWSClient2(void);
+    ~AWSClient4(void);
 };
 
 #endif /* AWSCLIENT4_H_ */
