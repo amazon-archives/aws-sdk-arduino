@@ -9,6 +9,7 @@ AmazonIOTClient::AmazonIOTClient() : AWSClient4() {
     this->signedHeaders = "host;x-amz-content-sha256;x-amz-date";
     this->uri = "/";
     this->queryString = "";
+    this->httpS = true;
 }
 
 char* AmazonIOTClient::update_shadow(MinimalString shadow, ActionError& actionError) {
@@ -16,8 +17,8 @@ char* AmazonIOTClient::update_shadow(MinimalString shadow, ActionError& actionEr
 
     this->method = "POST";
     char* request = createRequest(shadow);
-    // char* response = sendData(request);
-    return request;
+    char* response = sendData(request);
+    return response;
 
 
     // delete[] request;

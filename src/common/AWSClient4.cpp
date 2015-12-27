@@ -228,22 +228,16 @@ char* AWSClient4::createRequest(MinimalString &reqPayload) {
     char *headers = createRequestHeaders(signature);
 
     char *host = createHost();
-    char* request = new char[strlen(method) + strlen(host) + strlen(awsPath) + strlen(headers) + strlen(reqPayload.getCStr()) + 4]();
-    sprintf(request, "%s %s%s\n%s\n%s", method, createHost(), awsPath, headers, reqPayload.getCStr());
+    char* request = new char[strlen(method) + strlen(host) + strlen(awsPath) + strlen(headers) + strlen(reqPayload.getCStr()) + 12]();
+    sprintf(request, "%s %s HTTP/1.1\n%s\n%s", method, awsPath, headers, reqPayload.getCStr());
 
     return request;
-
-    // createRequestInit(reqPayload);
-    // char* request = headersToRequest();
-    // createRequestCleanup();
-
-    // return request;
 }
 
 char* AWSClient4::sendData(const char* data) {
-    char* server = createHostString();
+    char* server = createHost();
     int port = httpS ? 443 : 80;
-    char* response = httpClient->send(data, "A2MBBEONHC9LUG.iot.eu-west-1.amazonaws.com", port);
+    char* response = httpClient->send(data, server, port);
     delete[] server;
     return response;
 }

@@ -25,14 +25,17 @@ char* Esp8266HttpClient::send(const char* request, const char* serverUrl, int po
     String responseBuilder = "Response: ";
     if (client.connect(serverUrl, port)) {
         /* Send the requests */
-        client.println(request);
-        client.println();
+        client.print(request);
+        client.print("\n");
         /* Read the request into responseBuilder. */
         delay(delayTime);
+        Serial.println("<");
         while (client.available()) {
             char c = client.read();
             responseBuilder.concat(c);
+            Serial.print(".");
         }
+        Serial.println(">");
         client.stop();
     } else {
         client.stop();
