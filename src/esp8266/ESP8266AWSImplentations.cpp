@@ -14,7 +14,7 @@ Esp8266HttpClient::Esp8266HttpClient() {
 
 char* Esp8266HttpClient::send(const char* request, const char* serverUrl, int port) {
 
-    WiFiClientSecure client;
+    // WiFiClientSecure client;
     Serial.println(serverUrl);
     Serial.println(port);
     Serial.println(request);
@@ -22,7 +22,7 @@ char* Esp8266HttpClient::send(const char* request, const char* serverUrl, int po
     Serial.println("");
 
     /* Arduino String to build the response with. */
-    String responseBuilder = "foobar?";
+    String responseBuilder = "Response: ";
     if (client.connect(serverUrl, port)) {
         /* Send the requests */
         client.println(request);
@@ -57,8 +57,8 @@ Esp8266DateTimeProvider::Esp8266DateTimeProvider() {
 }
 
 const char* Esp8266DateTimeProvider::getDateTime() {
-    return "20151224120100";
-    // return updateCurTime();
+    // return "20151224120100";
+    return updateCurTime();
 }
 bool Esp8266DateTimeProvider::syncTakesArg(void) {
     return true;
@@ -126,11 +126,11 @@ char* updateCurTime(void) {
 
         // read the http GET Response
         String req2 = client2.readString();
-        Serial.println("");
-        Serial.println("");
-        Serial.print(req2);
-        Serial.println("");
-        Serial.println("");
+        // Serial.println("");
+        // Serial.println("");
+        // Serial.print(req2);
+        // Serial.println("");
+        // Serial.println("");
 
         // close connection
         delay(1);

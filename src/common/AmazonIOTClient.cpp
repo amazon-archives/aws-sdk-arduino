@@ -3,27 +3,18 @@
 #include <stdlib.h>
 #include "Utils.h"
 
-static const char* SERVICE = "iotdata";
-static const char* FORM_TYPE = "application/json";
-// static const char* PAYLOAD_TEMPLATE = "%s";
-// int PAYLOAD_TEMPLATE_LENGTH = 2;
-int IOT_EXTRACTED_TIMESTAMP_BUFFER_LENGTH = 17;
-int IOT_FORMATTED_TIMESTAMP_BUFFER_LENGTH = 15;
-
 AmazonIOTClient::AmazonIOTClient() : AWSClient4() {
-    awsService = SERVICE;
-    httpS = true;
+    this->awsService = "iotdata";
+    this->contentType = "application/json";
+    this->signedHeaders = "host;x-amz-content-sha256;x-amz-date";
+    this->uri = "/";
+    this->queryString = "";
 }
 
 char* AmazonIOTClient::update_shadow(MinimalString shadow, ActionError& actionError) {
-
     actionError = NONE_ACTIONERROR;
-    contentType = FORM_TYPE;
 
-    // char* request = createRequest(shadow, url);
-    // publishOutput.setResponse(request);
-
-    // char* request = createRequest(url, shadow);
+    this->method = "POST";
     char* request = createRequest(shadow);
     // char* response = sendData(request);
     return request;
