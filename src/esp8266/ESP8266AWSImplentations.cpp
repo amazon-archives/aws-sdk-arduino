@@ -14,39 +14,43 @@ Esp8266HttpClient::Esp8266HttpClient() {
 
 char* Esp8266HttpClient::send(const char* request, const char* serverUrl, int port) {
 
-    // WiFiClientSecure client;
+    WiFiClientSecure sclient;
     Serial.println(serverUrl);
     Serial.println(port);
     Serial.println(request);
     Serial.println("");
     Serial.println("");
 
-    /* Arduino String to build the response with. */
-    String responseBuilder = "Response: ";
-    if (client.connect(serverUrl, port)) {
-        /* Send the requests */
-        client.print(request);
-        client.print("\n");
-        /* Read the request into responseBuilder. */
-        delay(delayTime);
-        Serial.println("<");
-        while (client.available()) {
-            char c = client.read();
-            responseBuilder.concat(c);
-            Serial.print(".");
+    //
+    String response = "";
+    if (sclient.connect(serverUrl, port)) {
+
+        // Send the request
+        sclient.print(request);
+
+        // keep reading the response until it's finished
+        while(sclient.connected()) {
+          while(sclient.available()){
+            char c = sclient.read();
+            response.concat(c);
+            Serial.print('.');
+          }
         }
-        Serial.println(">");
-        client.stop();
+
+        // disconnect any open connections
+        sclient.stop();
+
     } else {
-        client.stop();
-        /* Error connecting. */
+        // connection was unsuccessful
+        sclient.stop();
         return "can't setup SSL connection";
     }
-    /* Copy responseBuilder into char* */
-    int len = responseBuilder.length();
-    char* response = new char[len + 1]();
-    responseBuilder.toCharArray(response, len + 1);
-    return response;
+
+    // convert the string into a char and return
+    int len = response.length();
+    char* response_char = new char[len + 1]();
+    response.toCharArray(response_char, len + 1);
+    return response_char;
 }
 
 bool Esp8266HttpClient::usesCurl() {
@@ -109,26 +113,26 @@ char* updateCurTime(void) {
     char utctimeraw[80];
     char* dpos;
 
-    WiFiClient client2;
-    if (client2.connect(timeServer, 80)) {
+    WiFiClient client;
+    if (client.connect(timeServer, 80)) {
         //Send Request
-        client2.println(timeServerGet);
-        client2.println();
-        while((!client2.available())&&(timeout_busy++<5000)){
+        client.println(timeServerGet);
+        client.println();
+        while((!client.available())&&(timeout_busy++<5000)){
           // Wait until the client sends some data
           delay(1);
         }
 
         // kill client if timeout
         if(timeout_busy>=5000) {
-            client2.flush();
-            client2.stop();
+            client.flush();
+            client.stop();
             Serial.println("timeout receiving timeserver data\n");
             return dateStamp;
         }
 
         // read the http GET Response
-        String req2 = client2.readString();
+        String req2 = client.readString();
         // Serial.println("");
         // Serial.println("");
         // Serial.print(req2);
@@ -137,8 +141,8 @@ char* updateCurTime(void) {
 
         // close connection
         delay(1);
-        client2.flush();
-        client2.stop();
+        client.flush();
+        client.stop();
 
         ipos = req2.indexOf("Date:");
         if(ipos>0) {

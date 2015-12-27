@@ -6,7 +6,7 @@
 
 /* HttpClient implementation to be used on the Esp8266 Core device. */
 class Esp8266HttpClient: public IHttpClient {
-    WiFiClientSecure client;
+    WiFiClientSecure sclient;
     //TCPClient client;
 public:
     Esp8266HttpClient();
@@ -19,7 +19,7 @@ public:
 class Esp8266DateTimeProvider: public IDateTimeProvider {
     /* The time as a cstring in yyyyMMddHHmmss format. Is written to within and
      * returned by getDateTime(). */
-    WiFiClient client2;
+    WiFiClient client;
     //char dateTime[15];
 public:
     char dateTime[15];
