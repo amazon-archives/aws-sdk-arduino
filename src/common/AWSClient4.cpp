@@ -127,11 +127,13 @@ char* AWSClient4::createCanonicalHeaders() {
 
 char* AWSClient4::createRequestHeaders(char* signature) {
   char headers[1000] = "";
-  sprintf(headers, "%sContent-Type: %s\n", headers, contentType);
-  sprintf(headers, "%sHost: %s\n", headers, createHost());
-  sprintf(headers, "%sx-amz-content-sha256: %s\n", headers, payloadHash);
-  sprintf(headers, "%sx-amz-date: %sT%sZ\n", headers, awsDate, awsTime);
-  sprintf(headers, "%sAuthorization: AWS4-HMAC-SHA256 Credential=%s/%s/%s/%s/aws4_request,SignedHeaders=%s,Signature=%s\n", headers, awsKeyID, awsDate, awsRegion, awsService, signedHeaders, signature);
+  sprintf(headers, "%sContent-Type: %s\r\n", headers, contentType);
+  sprintf(headers, "%sConnection: close\r\n", headers);
+  sprintf(headers, "%sContent-Length: %d\r\n", headers, strlen(payload.getCStr()));
+  sprintf(headers, "%sHost: %s\r\n", headers, createHost());
+  sprintf(headers, "%sx-amz-content-sha256: %s\r\n", headers, payloadHash);
+  sprintf(headers, "%sx-amz-date: %sT%sZ\r\n", headers, awsDate, awsTime);
+  sprintf(headers, "%sAuthorization: AWS4-HMAC-SHA256 Credential=%s/%s/%s/%s/aws4_request,SignedHeaders=%s,Signature=%s\r\n", headers, awsKeyID, awsDate, awsRegion, awsService, signedHeaders, signature);
   return headers;
 }
 
@@ -228,8 +230,8 @@ char* AWSClient4::createRequest(MinimalString &reqPayload) {
     char *headers = createRequestHeaders(signature);
 
     char *host = createHost();
-    char* request = new char[strlen(method) + strlen(host) + strlen(awsPath) + strlen(headers) + strlen(reqPayload.getCStr()) + 12]();
-    sprintf(request, "%s %s HTTP/1.1\n%s\n%s", method, awsPath, headers, reqPayload.getCStr());
+    char* request = new char[strlen(method) + strlen(host) + strlen(awsPath) + strlen(headers) + strlen(reqPayload.getCStr()) + 16]();
+    sprintf(request, "%s %s HTTP/1.1\r\n%s\r\n%s\r\n\r\n", method, awsPath, headers, reqPayload.getCStr());
 
     return request;
 }
