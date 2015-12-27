@@ -147,16 +147,12 @@ For Spark, after the wiring is finished, you should be able to connect it to you
 
 #### ESP8266
 
-You can use these libraries with the (https://github.com/esp8266/arduino)[Arduino ESP8266]:.
+You can use these libraries with the [Arduino ESP8266](https://github.com/esp8266/arduino):.
 
 ```
+#include <ESP8266WiFi.h>
 #include <AmazonIOTClient.h>
-#include <AWSClient4.h>
-#include <DeviceIndependentInterfaces.h>
 #include "Esp8266AWSImplementations.h"
-#include "AWSFoundationalTypes.h"
-#include <stdlib.h>
-
 
 Esp8266HttpClient httpClient;
 Esp8266DateTimeProvider dateTimeProvider;
