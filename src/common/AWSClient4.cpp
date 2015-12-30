@@ -15,37 +15,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//
-// /* Constants string, formats, and lengths. */
-// static const char* CANONICAL_FORM_POST_LINE = "POST\n/\n\n";
-// static const int CANONICAL_FORM_POST_LINE_LEN = 8;
-// static const char* HTTPS_REQUEST_POST_LINE =
-//         "POST https://%s/%s\n";
-// // static const char* HTTPS_REQUEST_POST_LINE =
-// //         "POST https://%s/%s HTTP/1.1\n";
-// static const int HTTPS_REQUEST_POST_LINE_LEN = 19;
-// static const char* HTTP_REQUEST_POST_LINE = "POST http://%s/%s HTTP/1.1\n";
-// static const int HTTP_REQUEST_POST_LINE_LEN = 27;
-// static const char* TO_SIGN_TEMPLATE =
-//         "AWS4-HMAC-SHA256\n%sT%sZ\n%s/%s/%s/aws4_request\n%s";
-// static const int TO_SIGN_TEMPLATE_LEN = 36;
-// static const char* CONTENT_LENGTH_HEADER = "content-length:%d";
-// static const int CONTENT_LENGTH_HEADER_LEN = 15;
-// static const char* HOST_HEADER = "host:%s";
-// static const int HOST_HEADER_LEN = 7;
-// static const char* CONNECTION_HEADER = "Connection:close";
-// static const int CONNECTION_HEADER_LEN = 16;
-// static const char* CONTENT_TYPE_HEADER = "content-type:%s";
-// static const int CONTENT_TYPE_HEADER_LEN = 13;
-// static const char* X_AMZ_DATE_HEADER = "x-amz-date:%sT%sZ";
-// static const int X_AMZ_DATE_HEADER_LEN = 13;
-// static const char* AUTHORIZATION_HEADER =
-//         "Authorization: AWS4-HMAC-SHA256 Credential=%s/%s/%s/%s/aws4_request, SignedHeaders=%s, Signature=%s";
-// static const int AUTHORIZATION_HEADER_LEN = 87;
-// static const char* SIGNED_HEADERS =
-//         "content-length;content-type;host;x-amz-date";
-// static const int SIGNED_HEADERS_LEN = 43;
-//
 AWSClient4::AWSClient4() {
     /* Null until set in init method. */
     awsRegion = 0;
@@ -120,8 +89,9 @@ char* AWSClient4::createCanonicalHeaders() {
   char canonical_headers[500] = "";
   sprintf(canonical_headers, "%scontent-type:%s\n", canonical_headers, contentType);
   sprintf(canonical_headers, "%shost:%s\n", canonical_headers, createHost());
+  // sprintf(canonical_headers, "%srange:bytes=0-9\n", canonical_headers); // s3
   sprintf(canonical_headers, "%sx-amz-content-sha256:%s\n", canonical_headers, payloadHash);
-  sprintf(canonical_headers, "%sx-amz-date:%sT%sZ\n", canonical_headers, awsDate, awsTime);
+  sprintf(canonical_headers, "%sx-amz-date:%sT%sZ\n\n", canonical_headers, awsDate, awsTime);
   return canonical_headers;
 }
 
@@ -138,30 +108,33 @@ char* AWSClient4::createRequestHeaders(char* signature) {
 }
 
 char* AWSClient4::createStringToSign(char* canonical_request) {
-  char string_to_sign[700] = "AWS4-HMAC-SHA256\n";
-  sprintf(string_to_sign, "%s%sT%sZ\n", canonical_request, awsDate, awsTime);
-  sprintf(string_to_sign, "%s%s/%s/%s/aws4_request\n", canonical_request, awsDate, awsRegion, awsService);
-
+  // return canonical_request;
   SHA256* sha256 = new SHA256();
   char* hashed = (*sha256)(canonical_request, strlen(canonical_request));
   delete sha256;
+  // return canonical_request;
 
-  sprintf(string_to_sign, "%s%s", canonical_request, hashed);
+  char string_to_sign[700] = "";
+  sprintf(string_to_sign, "%sAWS4-HMAC-SHA256\n", string_to_sign);
+  sprintf(string_to_sign, "%s%sT%sZ\n", string_to_sign, awsDate, awsTime);
+  sprintf(string_to_sign, "%s%s/%s/%s/aws4_request\n", string_to_sign, awsDate, awsRegion, awsService);
+
+  sprintf(string_to_sign, "%s%s", string_to_sign, hashed);
 
   return string_to_sign;
 }
 
 char* AWSClient4::createCanonicalRequest() {
-  char canonical_request[700] = "";
+  char canonical_request[800] = "";
   sprintf(canonical_request, "%s%s\n", canonical_request, method); // VERB
-  sprintf(canonical_request, "%s%s\n", canonical_request, uri); // URI
+  sprintf(canonical_request, "%s%s\n", canonical_request, awsPath); // URI
   sprintf(canonical_request, "%s%s\n", canonical_request, queryString); // queryString
 
   char* headers = createCanonicalHeaders();
 
   sprintf(canonical_request, "%s%s", canonical_request, headers); // headers
   sprintf(canonical_request, "%s%s\n", canonical_request, signedHeaders); // signed_headers
-  sprintf(canonical_request, "%s%s\n", canonical_request, payload.getCStr()); // payload
+  sprintf(canonical_request, "%s%s", canonical_request, payloadHash); // payload
 
   return canonical_request;
 }
@@ -223,13 +196,29 @@ char* AWSClient4::createRequest(MinimalString &reqPayload) {
 
     payload = reqPayload;
 
-    char *canonical_request = createCanonicalRequest();
-    char *string_to_sign = createStringToSign(canonical_request);
+    // create the canonical request, we need to copy the results
+    // @TODO: figure out why the reference doesn't work
+    char *canonical_request_return = createCanonicalRequest();
+    char canonical_request[1000];
+    strcpy(canonical_request, canonical_request_return);
+    // return canonical_request;
+
+    // create the signing string, we need to copy the results
+    // @TODO: figure out why the reference doesn't work
+    char *return_string_to_sign = createStringToSign(canonical_request);
+    char string_to_sign[500];
+    strcpy(string_to_sign, return_string_to_sign);
+
+    // create the signature
     char *signature = createSignature(string_to_sign);
 
+    // create the headers
     char *headers = createRequestHeaders(signature);
 
+    // get the host/domain
     char *host = createHost();
+
+    // create the request with all the vars
     char* request = new char[strlen(method) + strlen(host) + strlen(awsPath) + strlen(headers) + strlen(reqPayload.getCStr()) + 16]();
     sprintf(request, "%s %s HTTP/1.1\r\n%s\r\n%s\r\n\r\n", method, awsPath, headers, reqPayload.getCStr());
 
