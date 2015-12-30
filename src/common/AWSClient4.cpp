@@ -75,10 +75,6 @@ AWSClient4::~AWSClient4() {
         delete[] awsKeyID;
 }
 
-char* AWSClient4::createHost() {
-    // return "example.com";
-    return awsDomain;
-}
 
 char* AWSClient4::createCanonicalHeaders() {
   // headers, alphabetically sorted, lowercase, eg: key:value
@@ -88,7 +84,7 @@ char* AWSClient4::createCanonicalHeaders() {
   // x-amz-date:date
   char canonical_headers[500] = "";
   sprintf(canonical_headers, "%scontent-type:%s\n", canonical_headers, contentType);
-  sprintf(canonical_headers, "%shost:%s\n", canonical_headers, createHost());
+  sprintf(canonical_headers, "%shost:%s\n", canonical_headers, awsDomain);
   // sprintf(canonical_headers, "%srange:bytes=0-9\n", canonical_headers); // s3
   sprintf(canonical_headers, "%sx-amz-content-sha256:%s\n", canonical_headers, payloadHash);
   sprintf(canonical_headers, "%sx-amz-date:%sT%sZ\n\n", canonical_headers, awsDate, awsTime);
@@ -100,7 +96,7 @@ char* AWSClient4::createRequestHeaders(char* signature) {
   sprintf(headers, "%sContent-Type: %s\r\n", headers, contentType);
   sprintf(headers, "%sConnection: close\r\n", headers);
   sprintf(headers, "%sContent-Length: %d\r\n", headers, strlen(payload.getCStr()));
-  sprintf(headers, "%sHost: %s\r\n", headers, createHost());
+  sprintf(headers, "%sHost: %s\r\n", headers, awsDomain);
   sprintf(headers, "%sx-amz-content-sha256: %s\r\n", headers, payloadHash);
   sprintf(headers, "%sx-amz-date: %sT%sZ\r\n", headers, awsDate, awsTime);
   sprintf(headers, "%sAuthorization: AWS4-HMAC-SHA256 Credential=%s/%s/%s/%s/aws4_request,SignedHeaders=%s,Signature=%s\r\n", headers, awsKeyID, awsDate, awsRegion, awsService, signedHeaders, signature);
@@ -216,19 +212,19 @@ char* AWSClient4::createRequest(MinimalString &reqPayload) {
     char *headers = createRequestHeaders(signature);
 
     // get the host/domain
-    char *host = createHost();
+    // char *host = createHost();
 
     // create the request with all the vars
-    char* request = new char[strlen(method) + strlen(host) + strlen(awsPath) + strlen(headers) + strlen(reqPayload.getCStr()) + 16]();
+    char* request = new char[strlen(method) + strlen(awsDomain) + strlen(awsPath) + strlen(headers) + strlen(reqPayload.getCStr()) + 16]();
     sprintf(request, "%s %s HTTP/1.1\r\n%s\r\n%s\r\n\r\n", method, awsPath, headers, reqPayload.getCStr());
 
     return request;
 }
 
 char* AWSClient4::sendData(const char* data) {
-    char* server = createHost();
+    // char* server = createHost();
     int port = httpS ? 443 : 80;
-    char* response = httpClient->send(data, server, port);
-    delete[] server;
+    char* response = httpClient->send(data, awsDomain, port);
+    // delete[] server;
     return response;
 }
