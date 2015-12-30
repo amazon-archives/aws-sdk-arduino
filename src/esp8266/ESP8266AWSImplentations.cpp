@@ -59,12 +59,9 @@ bool Esp8266HttpClient::usesCurl() {
 }
 
 Esp8266DateTimeProvider::Esp8266DateTimeProvider() {
-    /* No need to sync, spark sychronizes time on startup. */
-    //strcpy(dateTime, updateCurTime2(client2));
 }
 
 const char* Esp8266DateTimeProvider::getDateTime() {
-    // return "20151224120100";
     return updateCurTime();
 }
 bool Esp8266DateTimeProvider::syncTakesArg(void) {
