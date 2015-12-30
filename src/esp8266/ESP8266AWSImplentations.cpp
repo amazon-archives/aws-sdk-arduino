@@ -35,10 +35,10 @@ char* Esp8266HttpClient::send(const char* request, const char* serverUrl, int po
             response.concat(c);
             Serial.print('.');
           }
-        }
 
-        // disconnect any open connections
-        sclient.stop();
+          // disconnect any open connections
+          sclient.stop();
+        }
 
     } else {
         // connection was unsuccessful
