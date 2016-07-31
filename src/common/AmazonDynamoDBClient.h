@@ -153,7 +153,7 @@ public:
 
 /* <p>Represents the data for an attribute. You can set one, and only one, of the elements.</p> */
 class AttributeValue{
-    MinimalList<MinimalString > SSS;
+    MinimalList<MinimalString > SS;
     MinimalList<MinimalString > BS;
     MinimalString B;
     MinimalString S;

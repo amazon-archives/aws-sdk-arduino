@@ -23,13 +23,13 @@ Happy experimenting!
 
 Trying the samples is a good way to get started with using the SDK.
 
-Getting the samples working has the following steps: setting up the DynamoDB table, importing the SDK and copying over the sample, creating the `keys.h` and `keys.cpp` files, and setting up the hardware. These steps are outlined for the samples for both the Spark core and Intel Galileo, so be sure you are following only the directions corresponding to the device and sample you are using. 
+Getting the samples working has the following steps: setting up the DynamoDB table, importing the SDK and copying over the sample, creating the `keys.h` and `keys.cpp` files, and setting up the hardware. These steps are outlined for the samples for both the Spark core and Intel Galileo, so be sure you are following only the directions corresponding to the device and sample you are using.
 
 If you are using a device other than Spark or Galileo, you may want to read through these steps anyway before implementing the interfaces in `DeviceIndependentInterfaces.cpp`/`.h` for your device.
 
 ### Step 1: Setting up the DynamoDB Table
 
-For either device you will need to set up a DynamoDB table with the same name, hash key, and range key as in the sample you are using. These values are defined as constants in the sample, i.e. `HASH_KEY_NAME` and `TABLE_NAME`. 
+For either device you will need to set up a DynamoDB table with the same name, hash key, and range key as in the sample you are using. These values are defined as constants in the sample, i.e. `HASH_KEY_NAME` and `TABLE_NAME`.
 
 You can follow the steps below to get the tables set up with the right values, chosing the right set of instructions based on which sample you are using.
 
@@ -65,7 +65,7 @@ This step is different for the Spark Core and Intel Galileo.
 
 #### Connected Maraca Sample (Edison/SparkCore/MediaTek)
 
-follow the step by step guide: http://bit.ly/aws-iot-hackseries 
+follow the step by step guide: http://bit.ly/aws-iot-hackseries
 
 #### Intel Galileo/Edison Sample
 
@@ -80,11 +80,11 @@ Create a new sketch with the Arduino IDE and copy and paste the sample code into
 
 #### Spark IO Core Sample
 
-This assumes you already have your Spark set up and are able to program it with Spark Build. If you do not, head over to [Spark's website](http://docs.spark.io/). 
+This assumes you already have your Spark set up and are able to program it with Spark Build. If you do not, head over to [Spark's website](http://docs.spark.io/).
 
 Open up the Spark Build web page and create a new app. Name it whatever you would like.
 
-Copy the contents of the sample you are using into the `.ino` file of your new app. 
+Copy the contents of the sample you are using into the `.ino` file of your new app.
 
 Next you need to import the SDK. Because the Spark Build IDE isn't local to your machine, you can't just `cp` the files over. Instead use the "+" tab in the top right corner of the Spark Build page to create a new file for each `.cpp`/`.h` file in the `src/` directory, except `GalileoAWSImplementations` and `AmazonKinesisClient`. Then copy and paste the contents of each file.
 
@@ -99,7 +99,7 @@ You will need to create and add `keys.h` and `keys.cpp` into the `AWSArduinoSDK`
 #ifndef KEYS_H_
 #define KEYS_H_
 
-extern const char* awsKeyID;  // Declare these variables to 
+extern const char* awsKeyID;  // Declare these variables to
 extern const char* awsSecKey; // be accessible by the sketch
 
 #endif
@@ -129,7 +129,7 @@ Both spark samples use just one button connected to the D2 pin.
 
 #### Intel Galileo
 
-This sample uses five buttons and a RGB LED. 
+This sample uses five buttons and a RGB LED.
 
 The RGB LED has the red leg connected to pin 6, the green leg connected to pin 9, and the blue leg connected to pin 10.
 
@@ -145,4 +145,56 @@ For Galileo/Edison, after the wiring is finished, you should be able to connect 
 
 For Spark, after the wiring is finished, you should be able to connect it to your computer via USB, and *Flash* the code. Be sure to refer to the comments in the samples for help.
 
+#### ESP8266
 
+You can use these libraries with the [Arduino ESP8266](https://github.com/esp8266/arduino):.
+
+```
+#include <ESP8266WiFi.h>
+#include <AmazonIOTClient.h>
+#include "Esp8266AWSImplementations.h"
+
+Esp8266HttpClient httpClient;
+Esp8266DateTimeProvider dateTimeProvider;
+
+AmazonIOTClient iotClient;
+ActionError actionError;
+
+void setup() {
+  Serial.begin(115200);
+  delay(10);
+
+  // Connect to WAP
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  iotClient.setAWSRegion("eu-west-1");
+  iotClient.setAWSEndpoint("amazonaws.com");
+  iotClient.setAWSDomain("foobar.iot.eu-west-1.amazonaws.com");
+  iotClient.setAWSPath("/things/example-1/shadow");
+  iotClient.setAWSKeyID("ID");
+  iotClient.setAWSSecretKey("SECRET");
+  iotClient.setHttpClient(&httpClient);
+  iotClient.setDateTimeProvider(&dateTimeProvider);
+}
+
+void loop(){
+  char* shadow = "{\"state\":{\"reported\": {\"foobar\": "bar"}}}";
+
+  char* result = iotClient.update_shadow(shadow, actionError);
+  Serial.print(result);
+
+  delay(60000);
+}
+
+```

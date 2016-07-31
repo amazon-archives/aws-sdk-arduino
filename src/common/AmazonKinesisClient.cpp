@@ -2354,4 +2354,3 @@ KinesisErrorCheckingOnlyOutput AmazonKinesisClient::splitShard(SplitShardInput s
     }
     return kinesisErrorCheckingOnlyOutput;
 }
-

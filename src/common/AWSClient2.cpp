@@ -280,7 +280,7 @@ char* AWSClient2::createRequest(MinimalString &reqPayload) {
     if (awsRegion == 0 || awsEndpoint == 0 || awsSecKey == 0 || awsKeyID == 0
             || httpClient == 0 || dateTimeProvider == 0)
         return 0;
-        
+
     createRequestInit(reqPayload);
     char* request = headersToRequest();
     createRequestCleanup();
